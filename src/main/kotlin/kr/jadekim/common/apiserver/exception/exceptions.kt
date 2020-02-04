@@ -104,14 +104,6 @@ class ServerException(
     logLevel = Level.ERROR
 )
 
-class CryptoException(
-    cause: Throwable
-) : ApiException(
-    code = 3,
-    cause = cause,
-    logLevel = Level.ERROR
-)
-
 class NotFoundException(
     cause: Throwable? = null
 ) : ApiException(
