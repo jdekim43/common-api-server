@@ -76,7 +76,7 @@ open class ApiException(
 
     open fun toResponse(locale: Locale? = null) = ApiResponse(code, getAlertMessage(locale), data)
 
-    fun getAlertMessage(locale: Locale? = null) = messageMap.getMessage(javaClass.simpleName, locale)
+    open fun getAlertMessage(locale: Locale? = null) = messageMap.getMessage(javaClass.simpleName, locale)
 }
 
 // 1 ~ 99 : 공통 오류
@@ -101,6 +101,16 @@ class ServerException(
     data = data,
     message = message,
     cause = cause,
+    logLevel = Level.ERROR
+)
+
+class AssertException(
+    message: String,
+    data: Any? = null
+) : ApiException(
+    code = 3,
+    data = data,
+    message = message,
     logLevel = Level.ERROR
 )
 
