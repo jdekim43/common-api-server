@@ -1,8 +1,8 @@
 package kr.jadekim.common.apiserver.protocol
 
 open class ApiResponse<T>(
-    val code: Int = 0,
-    val message: String = "",
+    val errorCode: String? = null,
+    val errorMessage: String? = null,
     val data: T? = null,
     val timestamp: Long = System.currentTimeMillis()
 )

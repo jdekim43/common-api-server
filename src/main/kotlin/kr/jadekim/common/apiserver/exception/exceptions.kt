@@ -16,20 +16,27 @@ var messageMap: MessageMap = defaultMessages.fold(mutableMapOf()) { acc, message
 }
 
 fun setMessages(locale: Locale, messages: Map<String, String>) {
-    messages.forEach { (messageName, message) ->
-        val languageMap = messageMap.getOrPut(messageName) { mutableMapOf() }
+    messages.forEach { (errorCode, message) ->
+        val languageMap = messageMap.getOrPut(errorCode) { mutableMapOf() }
         languageMap[locale] = message
     }
 }
 
-fun setMessageResources(directory: File) {
+fun loadErrorMessage(directory: File) {
     directory.readMessageResources().forEach {
         it.loadMessagesTo(messageMap)
     }
 }
 
-fun MessageMap.getMessage(name: String, locale: Locale? = null): String {
-    val localeMap = messageMap.getOrPut(name) {
+fun loadErrorMessage(locale: Locale, file: File) {
+    file.inputStream()
+        .use { Properties().apply { load(it) } }
+        .let { Pair(locale, it) }
+        .loadMessagesTo(messageMap)
+}
+
+fun MessageMap.getErrorMessage(errorCode: String, locale: Locale? = null): String {
+    val localeMap = messageMap.getOrPut(errorCode) {
         messageMap["default"] ?: mutableMapOf(Locale.KOREA to "기타오류가 발생했습니다.")
     }
     val language = locale ?: Locale.getDefault() ?: Locale.KOREA
@@ -66,50 +73,45 @@ private fun Pair<Locale, Properties>.loadMessagesTo(messageMap: MessageMap): Mes
 }
 
 open class ApiException(
-    val code: Int,
-    val httpStatus: Int = 500,
+    val code: String,
+    val httpStatus: Int = 400,
     val data: Any? = null,
     cause: Throwable? = null,
     message: String? = cause?.message,
     val logLevel: Level = Level.WARNING
 ) : RuntimeException("API-EXCEPTION($code) : $message", cause) {
 
-    open fun toResponse(locale: Locale? = null) = ApiResponse(code, getAlertMessage(locale), data)
+    open fun toResponse(locale: Locale? = null) = ApiResponse(code, getErrorMessage(locale), data)
 
-    open fun getAlertMessage(locale: Locale? = null) = messageMap.getMessage(javaClass.simpleName, locale)
+    open fun getErrorMessage(locale: Locale? = null) = messageMap.getErrorMessage(code, locale)
 }
 
-// 1 ~ 99 : 공통 오류
 class UnknownException(
     cause: Throwable,
-    message: String? = null,
-    data: Any? = null
+    message: String? = null
 ) : ApiException(
-    code = 1,
-    data = data,
+    code = "COM-1",
     message = message ?: cause.message ?: "Unknown Exception",
     cause = cause,
+    httpStatus = 500,
     logLevel = Level.ERROR
 )
 
 class ServerException(
     cause: Throwable,
-    message: String,
-    data: Any? = null
+    message: String
 ) : ApiException(
-    code = 2,
-    data = data,
+    code = "COM-2",
     message = message,
     cause = cause,
+    httpStatus = 500,
     logLevel = Level.ERROR
 )
 
 class AssertException(
-    message: String,
-    data: Any? = null
+    message: String
 ) : ApiException(
-    code = 3,
-    data = data,
+    code = "COM-3",
     message = message,
     logLevel = Level.ERROR
 )
@@ -117,36 +119,41 @@ class AssertException(
 class NotFoundException(
     cause: Throwable? = null
 ) : ApiException(
-    code = 4,
+    code = "COM-4",
+    httpStatus = 404,
     cause = cause,
     logLevel = Level.ERROR
 )
 
 class UnauthorizedException(
-    val token: String,
+    message: String,
     cause: Throwable? = null
 ) : ApiException(
-    code = 5,
+    code = "COM-5",
     httpStatus = 401,
+    message = message,
     cause = cause
 )
 
 class MaintenanceException : ApiException(
-    code = 6,
-    httpStatus = 400,
+    code = "COM-6",
     logLevel = Level.DEBUG
 )
 
-class MissingParameterException(message: String, cause: Throwable? = null) : ApiException(
-    code = 7,
+class MissingParameterException(
+    message: String,
+    cause: Throwable? = null
+) : ApiException(
+    code = "COM-7",
     message = message,
-    httpStatus = 400,
     cause = cause
 )
 
-class InvalidParameterException(message: String, cause: Throwable? = null) : ApiException(
-    code = 8,
+class InvalidParameterException(
+    message: String,
+    cause: Throwable? = null
+) : ApiException(
+    code = "COM-8",
     message = message,
-    httpStatus = 400,
     cause = cause
 )
