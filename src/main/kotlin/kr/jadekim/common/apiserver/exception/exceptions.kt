@@ -81,7 +81,7 @@ open class ApiException(
     val logLevel: Level = Level.WARNING
 ) : RuntimeException("API-EXCEPTION($code) : $message", cause) {
 
-    open fun toResponse(locale: Locale? = null) = ApiResponse(code, getErrorMessage(locale), data)
+    open fun toResponse(locale: Locale? = null) = ApiResponse(false, code, getErrorMessage(locale), data)
 
     open fun getErrorMessage(locale: Locale? = null) = messageMap.getErrorMessage(code, locale)
 }

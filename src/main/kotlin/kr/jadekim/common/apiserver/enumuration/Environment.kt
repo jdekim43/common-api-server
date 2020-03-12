@@ -1,6 +1,10 @@
 package kr.jadekim.common.apiserver.enumuration
 
-enum class Environment {
+interface IEnvironment {
+    val name: String
+}
+
+enum class Environment : IEnvironment {
     LOCAL,
     DEVELOPMENT,
     QA,
@@ -20,7 +24,7 @@ enum class Environment {
     }
 }
 
-fun Number.isTrue(serviceEnv: Environment) = when {
+fun Number.isTrue(serviceEnv: IEnvironment) = when {
     this == 1 -> true
     this == 2 && serviceEnv == Environment.STAGE -> true
     else -> false

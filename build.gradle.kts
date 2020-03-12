@@ -2,14 +2,14 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.util.Date
 
 plugins {
-    kotlin("jvm") version "1.3.61"
+    kotlin("jvm") version "1.3.70"
     `maven-publish`
     id("com.jfrog.bintray") version "1.8.4"
 }
 
 val artifactName = "common-api-server"
 val artifactGroup = "kr.jadekim"
-val artifactVersion = "0.0.4"
+val artifactVersion = "1.0.0"
 group = artifactGroup
 version = artifactVersion
 
