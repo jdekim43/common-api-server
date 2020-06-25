@@ -9,7 +9,7 @@ plugins {
 
 val artifactName = "common-api-server"
 val artifactGroup = "kr.jadekim"
-val artifactVersion = "1.0.2"
+val artifactVersion = "1.0.3"
 group = artifactGroup
 version = artifactVersion
 
@@ -25,7 +25,7 @@ dependencies {
     implementation(kotlin("stdlib-jdk8"))
 
     implementation("kr.jadekim:j-logger:$jLoggerVersion")
-    implementation("kr.jadekim:common-util:$commonUtilVersion")
+    api("kr.jadekim:common-util:$commonUtilVersion")
 }
 
 tasks.withType<KotlinCompile> {
