@@ -17,15 +17,9 @@ enum class Environment : IEnvironment {
             "local" -> LOCAL
             "dev", "development" -> DEVELOPMENT
             "qa" -> QA
-            "stage", "staging" -> STAGE
+            "stg", "stage", "staging" -> STAGE
             "prd", "prod", "production", "real", "live" -> PRODUCTION
             else -> null
         }
     }
-}
-
-fun Number.isTrue(serviceEnv: IEnvironment) = when {
-    this == 1 -> true
-    this == 2 && serviceEnv == Environment.STAGE -> true
-    else -> false
 }

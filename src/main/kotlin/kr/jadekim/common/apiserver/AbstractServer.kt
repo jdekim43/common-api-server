@@ -13,7 +13,7 @@ abstract class AbstractServer(
         serverName: String? = null
 ) {
 
-    val serverName = serverName ?: javaClass.simpleName!!
+    val serverName = serverName ?: javaClass.simpleName
 
     protected val logger = JLog.get(javaClass)
 
