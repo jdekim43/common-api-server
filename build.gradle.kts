@@ -3,13 +3,14 @@ import java.util.Date
 
 plugins {
     kotlin("jvm") version "1.4.10"
-    `maven-publish`
+    kotlin("plugin.serialization") version "1.4.10"
+    id("maven-publish")
     id("com.jfrog.bintray") version "1.8.4"
 }
 
 val artifactName = "common-api-server"
 val artifactGroup = "kr.jadekim"
-val artifactVersion = "1.0.6"
+val artifactVersion = "1.0.8"
 group = artifactGroup
 version = artifactVersion
 
@@ -21,9 +22,12 @@ repositories {
 dependencies {
     val jLoggerVersion: String by project
     val commonUtilVersion: String by project
+    val kotlinxSerializationVersion: String by project
 
     implementation("kr.jadekim:j-logger:$jLoggerVersion")
     api("kr.jadekim:common-util:$commonUtilVersion")
+
+    compileOnly("org.jetbrains.kotlinx:kotlinx-serialization-json:$kotlinxSerializationVersion")
 }
 
 tasks.withType<KotlinCompile> {

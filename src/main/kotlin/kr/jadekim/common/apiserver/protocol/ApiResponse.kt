@@ -1,5 +1,8 @@
 package kr.jadekim.common.apiserver.protocol
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 open class ApiResponse<T>(
         val isSuccess: Boolean = true,
         val errorCode: String? = null,
@@ -8,18 +11,20 @@ open class ApiResponse<T>(
         val timestamp: Long = System.currentTimeMillis()
 )
 
-open class SuccessResponse<T>(
+@Suppress("FunctionName")
+fun <T> SuccessResponse(
         data: T
-) : ApiResponse<T>(
+) = ApiResponse(
         isSuccess = true,
         data = data
 )
 
-open class ErrorResponse<T>(
+@Suppress("FunctionName")
+fun <T> ErrorResponse(
         errorCode: String,
         errorMessage: String,
         data: T? = null
-) : ApiResponse<T>(
+) = ApiResponse(
         isSuccess = false,
         errorCode = errorCode,
         errorMessage = errorMessage,
